@@ -32,8 +32,8 @@ class BlockAnalysis(Analysis, metaclass=ABCMeta):
 
 class BlockFileAnalysis(BlockAnalysis, metaclass=ABCMeta):
     """
-    Analysis of a collection of records that describe how blocks are put into a cache with added information about the
-    origin and relationship of blocks.
+    Analysis of a collection of records that describe how blocks are put into a cache with added
+    information about the origin and relationship of blocks.
     """
     def __init__(self, record_collection: RecordCollection):
         """
@@ -45,8 +45,8 @@ class BlockFileAnalysis(BlockAnalysis, metaclass=ABCMeta):
 
     def register_file(self, file: BlockFile):
         """
-        Registers a block file with this analysis so that information is added about the potential origin of blocks and
-        their relationship to each other.
+        Registers a block file with this analysis so that information is added about the potential
+        origin of blocks and their relationship to each other.
         :param file: the block file
         """
         for block_id in file.block_hashes:

@@ -34,7 +34,9 @@ class TestStatisticalBlockAnalysis(unittest.TestCase):
         self.assertEqual(0, self.analysis.total_times_block_loaded("other"))
 
     def test_total_times_block_loaded_when_loaded(self):
-        expected_loads = len([record for record in self.records if record.block_hash == _BLOCK_HASH_1])
+        expected_loads = len(
+            [record for record in self.records if record.block_hash == _BLOCK_HASH_1]
+        )
         self.assertEqual(expected_loads, self.analysis.total_times_block_loaded(_BLOCK_HASH_1))
 
     def test_mean_block_accesses_whilst_loaded_when_not_loaded(self):
