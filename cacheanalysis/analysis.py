@@ -25,7 +25,7 @@ class BlockAnalysis(Analysis, metaclass=ABCMeta):
     def block_hashes(self) -> Set[str]:
         """
         Gets a set of hashes of all the blocks that are known about in this analysis.
-        :return: hashes all known blocks
+        :return: hashes of all known blocks
         """
         # TODO
 
