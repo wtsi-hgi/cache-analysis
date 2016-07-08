@@ -13,7 +13,11 @@ class StatisticalBlockAnalysis(BlockAnalysis):
         :param block_hash: the block hash
         :return: the total number of times loaded
         """
-        # TODO
+        # TODO: define 'loaded'
+        # test implies that deleting block from cache counts as load
+        return len(self.record_collection.get_block_accesses(block_hash)) + \
+            len(self.record_collection.get_block_puts(block_hash)) + \
+            len(self.record_collection.get_block_deletes(block_hash))
 
     def mean_block_accesses_whilst_loaded(self, block_hash: str) -> Optional[float]:
         """
