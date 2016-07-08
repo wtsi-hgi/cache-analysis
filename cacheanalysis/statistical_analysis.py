@@ -37,7 +37,6 @@ class StatisticalBlockAnalysis(BlockAnalysis):
     # TODO: Anything else that might be useful to know
 
 
-
 class StatisticalBlockFileAnalysis(BlockFileAnalysis):
     """
     Statistical analysis of block files that are put into a cache.
