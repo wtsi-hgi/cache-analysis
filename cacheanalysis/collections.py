@@ -25,24 +25,27 @@ class RecordCollection:
 
     def get_block_accesses(self, block_hash: str) -> Set[CacheAccessRecord]:
         """
-        TODO
+        Get all block accesses associated with the given block hash.
         :param block_hash:
         :return:
         """
-        # TODO
+        return set((record for record in self._records[CacheAccessRecord]
+                    if record.block_hash == block_hash))
 
     def get_block_puts(self, block_hash: str) -> Set[CachePutRecord]:
         """
-        TODO
+        Get all block puts associated with the given block hash.
         :param block_hash:
         :return:
         """
-        # TODO
+        return set((record for record in self._records[CachePutRecord]
+                    if record.block_hash == block_hash))
 
     def get_block_deletes(self, block_hash: str) -> Set[CacheDeleteRecord]:
         """
-        TODO
+        Get all block deletes associated with the given block hash.
         :param block_hash:
         :return:
         """
-        # TODO
+        return set((record for record in self._records[CacheDeleteRecord]
+                    if record.block_hash == block_hash))
