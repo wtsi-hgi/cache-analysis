@@ -18,10 +18,10 @@ class RecordCollection:
 
     def add_record(self, record: Record):
         """
-        TODO
+        Add a record to the collection.
         :param record:
         """
-        # TODO
+        self._records[type(record)].add(record)
 
     def get_block_accesses(self, block_hash: str) -> Set[CacheAccessRecord]:
         """
