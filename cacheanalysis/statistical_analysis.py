@@ -29,7 +29,7 @@ class StatisticalBlockAnalysis(BlockAnalysis):
         """
         Gets the mean number of other block loads that took place between when the given block was
         deleted from the cache and then reloaded. If the given block has not been loaded into the
-        cache or was not deleted once loaded, `None` is returned.
+        cache, was not deleted once loaded or was not reloaded once deleted, `None` is returned.
         :param block_hash: the block hash
         :return: the mean number of other block loads between reloading
         """
