@@ -27,7 +27,7 @@ class BlockAnalysis(Analysis, metaclass=ABCMeta):
         Gets a set of hashes of all the blocks that are known about in this analysis.
         :return: hashes of all known blocks
         """
-        # TODO
+        return set((record.block_hash for record in self.record_collection))
 
 
 class BlockFileAnalysis(BlockAnalysis, metaclass=ABCMeta):

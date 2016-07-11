@@ -1,4 +1,5 @@
 from collections import defaultdict
+from itertools import chain
 from typing import Dict
 
 from typing import Set
@@ -15,6 +16,17 @@ class RecordCollection:
         Constructor.
         """
         self._records = defaultdict(set)  # type: Dict[type, Set[Record]]
+
+    def __iter__(self):
+        """
+        Iterate over records in the collection.
+        :return:
+        """
+        self._iter_records = iter(set(chain.from_iterable(self._records.values())))
+        return self
+
+    def __next__(self):
+        return next(self._iter_records)
 
     def add_record(self, record: Record):
         """
