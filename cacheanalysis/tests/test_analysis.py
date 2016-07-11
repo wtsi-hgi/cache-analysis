@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 
 from cacheanalysis.analysis import BlockAnalysis
 from cacheanalysis.collections import RecordCollection
-from cacheanalysis.models import CachePutRecord, CacheAccessRecord, CacheDeleteRecord
+from cacheanalysis.models import CacheMissRecord, CacheHitRecord, CacheDeleteRecord
 
 _BLOCK_HASH_1 = "123"
 _BLOCK_HASH_2 = "456"
@@ -17,13 +17,13 @@ class TestAnalysis(unittest.TestCase):
     """
     def setUp(self):
         self.records = [
-            CachePutRecord(_BLOCK_HASH_1, _TIMESTAMP, _SIZE),
-            CachePutRecord(_BLOCK_HASH_2, _TIMESTAMP, _SIZE),
-            CacheAccessRecord(_BLOCK_HASH_1, _TIMESTAMP + timedelta(days=1)),
+            CacheMissRecord(_BLOCK_HASH_1, _TIMESTAMP, _SIZE),
+            CacheMissRecord(_BLOCK_HASH_2, _TIMESTAMP, _SIZE),
+            CacheHitRecord(_BLOCK_HASH_1, _TIMESTAMP + timedelta(days=1)),
             CacheDeleteRecord(_BLOCK_HASH_1, _TIMESTAMP + timedelta(days=2)),
-            CachePutRecord(_BLOCK_HASH_1, _TIMESTAMP + timedelta(days=3), _SIZE),
-            CacheAccessRecord(_BLOCK_HASH_1, _TIMESTAMP + timedelta(days=4)),
-            CacheAccessRecord(_BLOCK_HASH_1, _TIMESTAMP + timedelta(days=5))
+            CacheMissRecord(_BLOCK_HASH_1, _TIMESTAMP + timedelta(days=3), _SIZE),
+            CacheHitRecord(_BLOCK_HASH_1, _TIMESTAMP + timedelta(days=4)),
+            CacheHitRecord(_BLOCK_HASH_1, _TIMESTAMP + timedelta(days=5))
         ]
         record_collection = RecordCollection()
         for record in self.records:

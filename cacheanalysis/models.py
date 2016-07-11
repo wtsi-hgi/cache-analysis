@@ -12,15 +12,15 @@ class Record(metaclass=ABCMeta):
         self.timestamp = timestamp
 
 
-class CacheAccessRecord(Record):
+class CacheHitRecord(Record):
     """
-    Record of an access of a block in a cache.
+    Record of a cache hit.
     """
 
 
-class CachePutRecord(Record):
+class CacheMissRecord(Record):
     """
-    Record of the put of a block in a cache.
+    Record of a cache miss.
     """
     def __init__(self, block_hash: str, timestamp: datetime, block_size: int):
         super().__init__(block_hash, timestamp)

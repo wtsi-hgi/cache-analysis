@@ -4,7 +4,7 @@ from typing import Dict
 
 from typing import Set
 
-from cacheanalysis.models import Record, CacheAccessRecord, CachePutRecord, CacheDeleteRecord
+from cacheanalysis.models import Record, CacheHitRecord, CacheMissRecord, CacheDeleteRecord
 
 
 class RecordCollection:
@@ -35,22 +35,22 @@ class RecordCollection:
         """
         self._records[type(record)].add(record)
 
-    def get_block_accesses(self, block_hash: str) -> Set[CacheAccessRecord]:
+    def get_block_hits(self, block_hash: str) -> Set[CacheHitRecord]:
         """
-        Get all block accesses associated with the given block hash.
+        Get all cache hits associated with the given block hash.
         :param block_hash:
         :return:
         """
-        return set((record for record in self._records[CacheAccessRecord]
+        return set((record for record in self._records[CacheHitRecord]
                     if record.block_hash == block_hash))
 
-    def get_block_puts(self, block_hash: str) -> Set[CachePutRecord]:
+    def get_block_misses(self, block_hash: str) -> Set[CacheMissRecord]:
         """
-        Get all block puts associated with the given block hash.
+        Get all cache misses associated with the given block hash.
         :param block_hash:
         :return:
         """
-        return set((record for record in self._records[CachePutRecord]
+        return set((record for record in self._records[CacheMissRecord]
                     if record.block_hash == block_hash))
 
     def get_block_deletes(self, block_hash: str) -> Set[CacheDeleteRecord]:
