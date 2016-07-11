@@ -47,12 +47,10 @@ class TestStatisticalBlockAnalysis(unittest.TestCase):
         self.assertEqual(expected_loads, self.analysis.total_times_block_loaded(_BLOCK_HASH_1))
 
     def test_mean_block_accesses_whilst_loaded_when_not_loaded(self):
-        pass
-        # TODO
+        self.assertIsNone(self.analysis.mean_block_accesses_whilst_loaded("other"))
 
     def test_mean_block_accesses_whilst_loaded_when_loaded(self):
-        pass
-        # TODO
+        self.assertEqual(1, self.analysis.mean_block_accesses_whilst_loaded(_BLOCK_HASH_1))
 
     def test_mean_other_block_loads_between_reload_when_not_reloaded(self):
         self.assertIsNone(self.analysis.mean_other_block_loads_between_reload(_BLOCK_HASH_2))
