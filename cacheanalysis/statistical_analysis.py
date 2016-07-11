@@ -23,7 +23,27 @@ class StatisticalBlockAnalysis(BlockAnalysis):
         :param block_hash: the block hash
         :return: the mean number of accesses
         """
-        # TODO
+        puts = self.record_collection.get_block_puts(block_hash)
+        accesses = self.record_collection.get_block_accesses(block_hash)
+        deletes = self.record_collection.get_block_deletes(block_hash)
+        if len(puts) == 0:
+            return None
+        # sort all records into chronological order
+        records = sorted(
+            [record for record in self.record_collection],
+            key=lambda record: record.timestamp
+        )
+        block_in_cache = False
+        block_accesses = []
+        for record in records:
+            if record in puts:
+                block_in_cache = True
+                block_accesses.append(0)
+            elif record in deletes:
+                block_in_cache = False
+            elif record in accesses and block_in_cache:
+                block_accesses[-1] += 1
+        return sum(block_accesses) / len(block_accesses)
 
     def mean_other_block_loads_between_reload(self, block_hash: str) -> Optional[float]:
         """
