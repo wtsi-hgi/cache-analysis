@@ -19,7 +19,7 @@ class RecordCollection:
 
     def __iter__(self):
         """
-        Iterate over records in the collection.
+        Iterate over all records in the collection.
         :return:
         """
         self._iter_records = iter(set(chain.from_iterable(self._records.values())))
