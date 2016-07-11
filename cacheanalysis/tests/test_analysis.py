@@ -13,7 +13,7 @@ _SIZE = 10
 
 class TestAnalysis(unittest.TestCase):
     """
-    TODO
+    Unit tests for `BlockAnalysis`.
     """
     def setUp(self):
         self.records = [
