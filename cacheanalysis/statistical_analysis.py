@@ -1,5 +1,7 @@
 from typing import Optional
 
+from operator import attrgetter
+
 from cacheanalysis.analysis import BlockAnalysis, BlockFileAnalysis
 from cacheanalysis.models import CacheMissRecord
 
@@ -32,7 +34,7 @@ class StatisticalBlockAnalysis(BlockAnalysis):
         # sort all records into chronological order
         records = sorted(
             [record for record in self.record_collection],
-            key=lambda record: record.timestamp
+            key=attrgetter("timestamp")
         )
         block_in_cache = False
         block_hits = []
@@ -61,7 +63,7 @@ class StatisticalBlockAnalysis(BlockAnalysis):
         # sort all records into chronological order
         records = sorted(
             [record for record in self.record_collection],
-            key=lambda record: record.timestamp
+            key=attrgetter("timestamp")
         )
         block_in_cache = True  # don't include data before the block is added for the first time
         other_block_misses = []
