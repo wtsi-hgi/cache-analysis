@@ -22,6 +22,7 @@ class BlockAnalysis(Analysis, metaclass=ABCMeta):
     """
     Analysis of a collection of records that describe how blocks are put into a cache.
     """
+    @property
     def block_hashes(self) -> Set[str]:
         """
         Gets a set of hashes of all the blocks that are known about in this analysis.

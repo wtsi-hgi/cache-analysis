@@ -31,10 +31,10 @@ class TestAnalysis(unittest.TestCase):
         self.analysis = BlockAnalysis(record_collection)
 
     def test_block_hashes_when_empty(self):
-        self.assertEqual(set(), BlockAnalysis(RecordCollection()).block_hashes())
+        self.assertEqual(set(), BlockAnalysis(RecordCollection()).block_hashes)
 
     def test_block_hashes_when_not_empty(self):
-        self.assertEqual({_BLOCK_HASH_1, _BLOCK_HASH_2}, self.analysis.block_hashes())
+        self.assertEqual({_BLOCK_HASH_1, _BLOCK_HASH_2}, self.analysis.block_hashes)
 
 
 if __name__ == '__main__':
