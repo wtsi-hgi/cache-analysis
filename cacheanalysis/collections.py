@@ -25,7 +25,6 @@ class RecordCollection(abc.Iterable, abc.Container):
         """
         return iter(set(chain.from_iterable(self._records.values())))
 
-
     def add_record(self, record: Record):
         """
         Add a record to the collection.
