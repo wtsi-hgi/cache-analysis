@@ -1,13 +1,11 @@
-from collections import defaultdict
+from collections import abc, defaultdict
 from itertools import chain
-from typing import Dict
-
-from typing import Set
+from typing import Dict, Set, Iterator
 
 from cacheanalysis.models import Record, CacheHitRecord, CacheMissRecord, CacheDeleteRecord
 
 
-class RecordCollection:
+class RecordCollection(abc.Iterable):
     """
     TODO
     """
@@ -17,16 +15,13 @@ class RecordCollection:
         """
         self._records = defaultdict(set)  # type: Dict[type, Set[Record]]
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator:
         """
-        Iterate over all records in the collection.
+        Iterate over all records in the collection. Order will not be consistent.
         :return:
         """
-        self._iter_records = iter(set(chain.from_iterable(self._records.values())))
-        return self
+        return iter(set(chain.from_iterable(self._records.values())))
 
-    def __next__(self):
-        return next(self._iter_records)
 
     def add_record(self, record: Record):
         """
