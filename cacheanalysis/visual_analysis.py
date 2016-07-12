@@ -1,10 +1,10 @@
 from abc import abstractmethod
 from operator import itemgetter
 
+from tabulate import tabulate
+
 from cacheanalysis.analysis import Analysis
 from cacheanalysis.analysis import BlockAnalysis
-
-from tabulate import tabulate
 
 
 class VisualAnalysis(Analysis):
