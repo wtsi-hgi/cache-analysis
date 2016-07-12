@@ -1,7 +1,10 @@
 from abc import abstractmethod
+from operator import itemgetter
 
 from cacheanalysis.analysis import Analysis
 from cacheanalysis.analysis import BlockAnalysis
+
+from tabulate import tabulate
 
 
 class VisualAnalysis(Analysis):
@@ -42,7 +45,42 @@ class MyBlockVisualAnalysis(BlockVisualAnalysis):
     """
     TODO
     """
-    # TODO
+    def visualise(self):
+        print("Blocks sorted by number of accesses (hits + misses)")
+        print(tabulate(
+            sorted(
+                [[block_hash, len(self.record_collection.get_block_misses(block_hash))
+                  + len(self.record_collection.get_block_hits(block_hash))]
+                 for block_hash in self.block_hashes],
+                key=itemgetter(1),  # Sort by the second column
+                reverse=True  # Sort descending
+            ),
+            headers=("Block", "Accesses"),
+            tablefmt="psql"
+        ))
+        print("Blocks sorted by number of cache misses (high is bad)")
+        print(tabulate(
+            sorted(
+                [[block_hash, len(self.record_collection.get_block_misses(block_hash))]
+                 for block_hash in self.block_hashes],
+                key=itemgetter(1),
+                reverse=True
+            ),
+            headers=("Block", "Cache misses"),
+            tablefmt="psql"
+        ))
+        print("Blocks sorted by cache hits over cache misses (low is bad)")
+        print(tabulate(
+            sorted(
+                [[block_hash,
+                  len(self.record_collection.get_block_hits(block_hash))
+                  / len(self.record_collection.get_block_misses(block_hash))]
+                 for block_hash in self.block_hashes],
+                key=itemgetter(1)
+            ),
+            headers=("Block", "Hits per miss"),
+            tablefmt="psql"
+        ))
 
 
 class MyBlockFileVisualAnalysis(BlockFileVisualAnalysis):
