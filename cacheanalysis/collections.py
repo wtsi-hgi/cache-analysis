@@ -5,7 +5,7 @@ from typing import Dict, Set, Iterator
 from cacheanalysis.models import Record, CacheHitRecord, CacheMissRecord, CacheDeleteRecord
 
 
-class RecordCollection(abc.Iterable):
+class RecordCollection(abc.Iterable, abc.Container):
     """
     TODO
     """
@@ -14,6 +14,9 @@ class RecordCollection(abc.Iterable):
         Constructor.
         """
         self._records = defaultdict(set)  # type: Dict[type, Set[Record]]
+
+    def __contains__(self, item) -> bool:
+        return item in set(chain.from_iterable(self._records.values()))
 
     def __iter__(self) -> Iterator:
         """
