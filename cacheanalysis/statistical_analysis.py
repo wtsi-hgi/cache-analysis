@@ -19,6 +19,15 @@ class StatisticalBlockAnalysis(BlockAnalysis):
         """
         return len(self.record_collection.get_block_misses(block_hash))
 
+    def total_block_hits(self, block_hash: str) -> int:
+        """
+        Gets the total number of cache hits for the given block (times that a block has been served
+        from the cache).
+        :param block_hash:
+        :return:
+        """
+        return len(self.record_collection.get_block_hits(block_hash))
+
     def mean_block_hits(self, block_hash: str) -> Optional[float]:
         """
         Gets the mean number of hits for the given block (accesses whilst it is in the cache). If

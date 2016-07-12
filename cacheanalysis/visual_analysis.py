@@ -3,8 +3,8 @@ from operator import itemgetter
 
 from tabulate import tabulate
 
-from cacheanalysis.analysis import Analysis
-from cacheanalysis.analysis import BlockAnalysis
+from cacheanalysis.analysis import Analysis, BlockAnalysis
+from cacheanalysis.statistical_analysis import StatisticalBlockAnalysis
 
 
 class VisualAnalysis(Analysis):
@@ -41,7 +41,7 @@ class BlockFileVisualAnalysis(BlockVisualAnalysis):
         """
 
 
-class MyBlockVisualAnalysis(BlockVisualAnalysis):
+class MyBlockVisualAnalysis(BlockVisualAnalysis, StatisticalBlockAnalysis):
     """
     TODO
     """
@@ -49,37 +49,33 @@ class MyBlockVisualAnalysis(BlockVisualAnalysis):
         print("Blocks sorted by number of accesses (hits + misses)")
         print(tabulate(
             sorted(
-                [[block_hash, len(self.record_collection.get_block_misses(block_hash))
-                  + len(self.record_collection.get_block_hits(block_hash))]
+                [[block_hash, self.total_block_misses(block_hash)
+                  + self.total_block_hits(block_hash)]
                  for block_hash in self.block_hashes],
                 key=itemgetter(1),  # Sort by the second column
                 reverse=True  # Sort descending
             ),
-            headers=("Block", "Accesses"),
-            tablefmt="psql"
+            headers=("Block", "Accesses")
         ))
         print("Blocks sorted by number of cache misses (high is bad)")
         print(tabulate(
             sorted(
-                [[block_hash, len(self.record_collection.get_block_misses(block_hash))]
+                [[block_hash, self.total_block_misses(block_hash)]
                  for block_hash in self.block_hashes],
                 key=itemgetter(1),
                 reverse=True
             ),
-            headers=("Block", "Cache misses"),
-            tablefmt="psql"
+            headers=("Block", "Cache misses")
         ))
         print("Blocks sorted by cache hits over cache misses (low is bad)")
         print(tabulate(
             sorted(
                 [[block_hash,
-                  len(self.record_collection.get_block_hits(block_hash))
-                  / len(self.record_collection.get_block_misses(block_hash))]
+                  self.total_block_hits(block_hash) / self.total_block_misses(block_hash)]
                  for block_hash in self.block_hashes],
                 key=itemgetter(1)
             ),
-            headers=("Block", "Hits per miss"),
-            tablefmt="psql"
+            headers=("Block", "Hits per miss")
         ))
 
 
