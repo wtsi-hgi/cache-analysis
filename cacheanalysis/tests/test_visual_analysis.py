@@ -1,9 +1,11 @@
 import unittest
-from datetime import datetime, timedelta
+from datetime import datetime
+
+from cacheusagesimulator.usage_generator import UsageGenerator
 
 from cacheanalysis.collections import RecordCollection
-from cacheanalysis.models import CacheMissRecord, CacheHitRecord, CacheDeleteRecord
-from cacheanalysis.visual_analysis import MyBlockVisualAnalysis
+from cacheanalysis.visual_analysis import VisualBlockAnalysis
+
 
 _BLOCK_HASH_1 = "123"
 _BLOCK_HASH_2 = "456"
@@ -17,25 +19,10 @@ class TestMyBlockVisualAnalysis(unittest.TestCase):
     Unit tests for `MyBlockVisualAnalysis`.
     """
     def setUp(self):
-        self.records = [
-            CacheMissRecord(_BLOCK_HASH_1, _TIMESTAMP, _SIZE),
-            CacheMissRecord(_BLOCK_HASH_2, _TIMESTAMP, _SIZE),
-            CacheHitRecord(_BLOCK_HASH_1, _TIMESTAMP + timedelta(days=1)),
-            CacheDeleteRecord(_BLOCK_HASH_1, _TIMESTAMP + timedelta(days=2)),
-            CacheMissRecord(_BLOCK_HASH_1, _TIMESTAMP + timedelta(days=3), _SIZE),
-            CacheHitRecord(_BLOCK_HASH_1, _TIMESTAMP + timedelta(days=4)),
-            CacheHitRecord(_BLOCK_HASH_1, _TIMESTAMP + timedelta(days=5)),
-            CacheDeleteRecord(_BLOCK_HASH_1, _TIMESTAMP + timedelta(days=6)),
-            CacheMissRecord(_BLOCK_HASH_3, _TIMESTAMP + timedelta(days=7), _SIZE),
-            CacheDeleteRecord(_BLOCK_HASH_3, _TIMESTAMP + timedelta(days=8)),
-            CacheMissRecord(_BLOCK_HASH_3, _TIMESTAMP + timedelta(days=9), _SIZE),
-            CacheMissRecord(_BLOCK_HASH_1, _TIMESTAMP + timedelta(days=10), _SIZE),
-            CacheHitRecord(_BLOCK_HASH_1, _TIMESTAMP + timedelta(days=11)),
-            CacheHitRecord(_BLOCK_HASH_1, _TIMESTAMP + timedelta(days=12)),
-            CacheHitRecord(_BLOCK_HASH_1, _TIMESTAMP + timedelta(days=13)),
-            CacheHitRecord(_BLOCK_HASH_2, _TIMESTAMP + timedelta(days=15)),
-            CacheDeleteRecord(_BLOCK_HASH_2, _TIMESTAMP + timedelta(days=16))
-        ]
+        self.usage_generator = UsageGenerator()
+        self.records = [self.usage_generator.generate() for _ in range(30000)]
+        print("records:", len(self.records))
+        print("average blocks read between reference reads:", self.usage_generator.average_block_reads_between_reference_block_read)
         record_collection = RecordCollection()
         for record in self.records:
             record_collection.add_record(record)
