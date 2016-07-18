@@ -1,5 +1,5 @@
 from abc import abstractmethod
-from operator import itemgetter
+from collections import Counter
 from math import ceil, pi
 
 from matplotlib import pyplot as plt
@@ -32,19 +32,16 @@ class VisualBlockAnalysis(VisualAnalysis):
         """
         Visualises what happens to the blocks in the collection of records.
         """
-        x = [self.statistical_analysis.total_block_misses(block_hash) for block_hash in self.block_hashes]
-        y = [self.statistical_analysis.total_block_hits(block_hash) for block_hash in self.block_hashes]
-        point_sizes = [[0 for y in range(max(y) + 1)] for x in range(max(x) + 1)]
+        count = Counter()
         for block_hash in self.block_hashes:
-            _x = self.statistical_analysis.total_block_misses(block_hash)
-            _y = self.statistical_analysis.total_block_hits(block_hash)
-            point_sizes[_x][_y] += 1
-        area = [[0 for y in range(max(y) + 1)] for x in range(max(x) + 1)]
-        for _x, v in enumerate(point_sizes):
-            for _y, _ in enumerate(v):
-                area[_x][_y] = pi * ceil(point_sizes[_x][_y] * 0.005)**2
-        plt.scatter(x, y, s=area, c="black", marker="o")
-        # Colour must be black to avoid artifacts when multiple points are drawn on top of each other
+            x = self.statistical_analysis.total_block_misses(block_hash)
+            y = self.statistical_analysis.total_block_hits(block_hash)
+            count[(x, y)] += 1
+        xysize = []
+        for k, v in count.items():
+            xysize.append((*k, v))
+        x, y, size = zip(*xysize)
+        plt.scatter(x, y, s=size, c="blue", marker=".")
         plt.title("Cache misses against cache hits")
         plt.xlabel("Cache misses")
         plt.ylabel("Cache hits")
