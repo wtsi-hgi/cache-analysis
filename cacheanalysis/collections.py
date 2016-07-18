@@ -1,6 +1,6 @@
-from collections import abc, defaultdict
+from collections import abc, defaultdict, Iterator
 from itertools import chain
-from typing import Dict, Set, Iterator
+from typing import Dict, Set, Iterable
 
 from cacheanalysis.models import Record, CacheHitRecord, CacheMissRecord, CacheDeleteRecord
 
@@ -9,11 +9,17 @@ class RecordCollection(abc.Iterable):
     """
     TODO
     """
-    def __init__(self):
+    def __init__(self, records: Iterable[Record]=None):
         """
         Constructor.
         """
         self._records = defaultdict(lambda: defaultdict(set))  # type: Dict[str, Dict[type, Set[Record]]]
+        if records is not None:
+            for record in records:
+                self.add_record(record)
+
+    def __contains__(self, item) -> bool:
+        return item in set(chain.from_iterable(self._records.values()))
 
     def __iter__(self) -> Iterator:
         """
