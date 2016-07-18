@@ -26,7 +26,7 @@ class TestMyBlockVisualAnalysis(unittest.TestCase):
         record_collection = RecordCollection()
         for record in self.records:
             record_collection.add_record(record)
-        self.analysis = MyBlockVisualAnalysis(record_collection)
+        self.analysis = VisualBlockAnalysis(record_collection)
 
     def test_visual_analysis(self):
         self.analysis.visualise()

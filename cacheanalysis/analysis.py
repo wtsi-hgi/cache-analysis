@@ -17,21 +17,23 @@ class Analysis(metaclass=ABCMeta):
         """
         self.record_collection = record_collection
 
-
-class BlockAnalysis(Analysis, metaclass=ABCMeta):
-    """
-    Analysis of a collection of records that describe how blocks are put into a cache.
-    """
     @property
     def block_hashes(self) -> Set[str]:
         """
         Gets a set of hashes of all the blocks that are known about in this analysis.
         :return: hashes of all known blocks
         """
-        return set((record.block_hash for record in self.record_collection))
+        return set(self.record_collection.records.keys())
 
 
-class BlockFileAnalysis(BlockAnalysis, metaclass=ABCMeta):
+class BlockAnalysis(Analysis, metaclass=ABCMeta):
+    """
+    Analysis of a collection of records that describe how blocks are put into a cache.
+    """
+    pass
+
+
+class BlockFileAnalysis(Analysis, metaclass=ABCMeta):
     """
     Analysis of a collection of records that describe how blocks are put into a cache with added
     information about the origin and relationship of blocks.

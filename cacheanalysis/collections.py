@@ -5,7 +5,7 @@ from typing import Dict, Set, Iterator
 from cacheanalysis.models import Record, CacheHitRecord, CacheMissRecord, CacheDeleteRecord
 
 
-class RecordCollection(abc.Iterable, abc.Container):
+class RecordCollection(abc.Iterable):
     """
     TODO
     """
@@ -13,24 +13,25 @@ class RecordCollection(abc.Iterable, abc.Container):
         """
         Constructor.
         """
-        self._records = defaultdict(set)  # type: Dict[type, Set[Record]]
-
-    def __contains__(self, item) -> bool:
-        return item in set(chain.from_iterable(self._records.values()))
+        self._records = defaultdict(lambda: defaultdict(set))  # type: Dict[str, Dict[type, Set[Record]]]
 
     def __iter__(self) -> Iterator:
         """
         Iterate over all records in the collection. Order will not be consistent.
         :return:
         """
-        return iter(set(chain.from_iterable(self._records.values())))
+        return iter(set(chain.from_iterable((chain.from_iterable(d.values())) for d in self._records.values())))
+
+    @property
+    def records(self):
+        return self._records
 
     def add_record(self, record: Record):
         """
         Add a record to the collection.
         :param record:
         """
-        self._records[type(record)].add(record)
+        self._records[record.block_hash][type(record)].add(record)
 
     def get_block_hits(self, block_hash: str) -> Set[CacheHitRecord]:
         """
@@ -38,8 +39,7 @@ class RecordCollection(abc.Iterable, abc.Container):
         :param block_hash:
         :return:
         """
-        return set((record for record in self._records[CacheHitRecord]
-                    if record.block_hash == block_hash))
+        return self._records[block_hash][CacheHitRecord]
 
     def get_block_misses(self, block_hash: str) -> Set[CacheMissRecord]:
         """
@@ -47,8 +47,7 @@ class RecordCollection(abc.Iterable, abc.Container):
         :param block_hash:
         :return:
         """
-        return set((record for record in self._records[CacheMissRecord]
-                    if record.block_hash == block_hash))
+        return self._records[block_hash][CacheMissRecord]
 
     def get_block_deletes(self, block_hash: str) -> Set[CacheDeleteRecord]:
         """
@@ -56,5 +55,4 @@ class RecordCollection(abc.Iterable, abc.Container):
         :param block_hash:
         :return:
         """
-        return set((record for record in self._records[CacheDeleteRecord]
-                    if record.block_hash == block_hash))
+        return self._records[block_hash][CacheDeleteRecord]
