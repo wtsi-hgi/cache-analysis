@@ -1,1 +1,2 @@
 tabulate==0.7.5
+matplotlib==1.5.1
