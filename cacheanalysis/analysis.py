@@ -44,7 +44,7 @@ class BlockFileAnalysis(Analysis, metaclass=ABCMeta):
         :param record_collection: see `Analysis.__init__`
         """
         super().__init__(record_collection)
-        self._known_blocks = defaultdict(set)   # type: Dict[str, Set[BlockFile]]
+        self._known_blocks = defaultdict(set)  # type: Dict[str, Set[BlockFile]]
 
     def register_file(self, file: BlockFile):
         """
