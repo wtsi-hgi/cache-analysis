@@ -20,7 +20,7 @@ class VisualAnalysis(Analysis):
         """
 
 
-class VisualBlockAnalysis(VisualAnalysis):
+class VisualBlockAnalysis(VisualAnalysis, BlockAnalysis):
     """
     Visualisation for the analysis of blocks that are put in a cache.
     """
@@ -41,7 +41,7 @@ class VisualBlockAnalysis(VisualAnalysis):
         for k, v in count.items():
             xysize.append((*k, v))
         x, y, size = zip(*xysize)
-        plt.scatter(x, y, s=size, c="blue", marker=".")
+        plt.scatter(x, y, s=size, color="blue", marker="o", edgecolors="none")
         plt.title("Cache misses against cache hits")
         plt.xlabel("Cache misses")
         plt.ylabel("Cache hits")
