@@ -1,11 +1,11 @@
 from abc import abstractmethod
-from collections import Counter
-from math import ceil, pi
+from collections import Counter, defaultdict
+from typing import Dict, List, Set, Tuple
 
 from matplotlib import pyplot as plt
 from tabulate import tabulate
 
-from cacheanalysis.analysis import Analysis
+from cacheanalysis.analysis import Analysis, BlockAnalysis, BlockFileAnalysis
 from cacheanalysis.statistical_analysis import StatisticalBlockAnalysis, StatisticalBlockFileAnalysis
 
 
@@ -71,7 +71,7 @@ class VisualBlockAnalysis(VisualAnalysis):
         # ))
 
 
-class VisualBlockFileAnalysis(VisualAnalysis):
+class VisualBlockFileAnalysis(VisualAnalysis, BlockFileAnalysis):
     """
     Visualisation for the analysis of known blocks that are put in a cache.
     """
@@ -79,8 +79,45 @@ class VisualBlockFileAnalysis(VisualAnalysis):
         super().__init__(record_collection)
         self.statistical_analysis = StatisticalBlockFileAnalysis(record_collection)
 
-    def visualise(self):
+    def visualise(self, display_hashes: List[str]=None):
         """
         Visualises what happens to the blocks in the collection of records, with
         information on what file each block belongs to.
+        :param display_hashes: hashes of blocks to display. If None, will display all blocks.
         """
+        plt.figure(figsize=(8, 12))
+
+        plt.subplot(211)
+        sizes = Counter()  # type: Dict[Tuple[int, int], int]
+        for block_hash in self.block_hashes:
+            x = self.statistical_analysis.total_block_misses(block_hash)
+            y = self.statistical_analysis.total_block_hits(block_hash)
+            sizes[(x, y)] += 1
+        xysize = []
+        for k, v in sizes.items():
+            xysize.append((*k, v))
+        x, y, size = zip(*xysize)
+        plt.scatter(x, y, s=size, color="blue", marker="o", edgecolor="none")
+        plt.title("Cache misses against cache hits")
+        plt.xlabel("Cache misses")
+        plt.ylabel("Cache hits")
+        plt.xlim(-0.5, max(10, max(x)) + .5)
+        plt.ylim(-0.5, max(10, max(y)) + .5)
+
+        plt.subplot(212)
+        sizes = Counter()  # type: Dict[Tuple[int, int], int]
+        for block_hash in filter(lambda x: not display_hashes or x in display_hashes, self.block_hashes):
+            x = self.statistical_analysis.total_block_misses(block_hash)
+            y = self.statistical_analysis.total_block_hits(block_hash)
+            sizes[(x, y)] += 1
+        xysize = []
+        for k, v in sizes.items():
+            xysize.append((*k, v))
+        x, y, size = zip(*xysize)
+        plt.scatter(x, y, s=size, color="blue", marker="o", edgecolor="none")
+        plt.title("Cache misses against cache hits (filtered)")
+        plt.xlabel("Cache misses")
+        plt.ylabel("Cache hits")
+        plt.xlim(-0.5, max(10, max(x)) + .5)
+        plt.ylim(-0.5, max(10, max(y)) + .5)
+        plt.show()
