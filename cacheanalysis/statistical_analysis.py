@@ -93,4 +93,20 @@ class StatisticalBlockFileAnalysis(StatisticalBlockAnalysis, BlockFileAnalysis):
     """
     Statistical analysis of block files that are put into a cache.
     """
-    # TODO: Anything interesting to know about block file access patterns
+    def known_file_block_hit_to_miss_proportion(self) -> float:
+        """
+        Gets the proportion of hits to misses for the blocks in all of the known
+        files.
+        :return: the ratio of hits to misses
+        """
+        # TODO
+
+    def not_known_file_block_hit_to_miss_proportion(self) -> float:
+        """
+        Gets the proportion of hits to misses for the blocks not in the known
+        files.
+        :return: the ratio of hits to misses
+        """
+        # TODO
+
+    # TODO: Anything else interesting to know about block file access patterns
