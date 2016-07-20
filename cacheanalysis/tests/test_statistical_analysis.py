@@ -88,7 +88,10 @@ class TestStatisticalBlockFileAnalysis(unittest.TestCase):
         self.analysis.register_file(block_file)
 
     def test_known_file_block_hit_to_miss_proportion(self):
-        self.assertEqual(0.5, self.analysis.known_file_block_hit_to_miss_proportion())
+        self.assertEqual(3/4, self.analysis.known_file_block_hit_to_miss_proportion())
+        # If finding the mean proportion of hits to misses, this will be 0.5 ((3/3 + 0/1)/2); if
+        # finding the total proportion, it will be 0.75 (3 hits / 4 misses). Here, the total
+        # proportion is more useful.
 
     def test_not_known_file_block_hit_to_miss_proportion_(self):
         self.assertEqual(0, self.analysis.not_known_file_block_hit_to_miss_proportion())

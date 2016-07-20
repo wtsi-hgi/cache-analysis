@@ -83,13 +83,13 @@ class StatisticalBlockFileAnalysis(StatisticalBlockAnalysis, BlockFileAnalysis):
         files.
         :return: the ratio of hits to misses
         """
-        hits_over_misses = []
+
+        hits = 0
+        misses = 0
         for block_hash in self._known_blocks:
-            hits_over_misses.append(
-                self.total_block_hits(block_hash)
-                / self.total_block_misses(block_hash)
-            )
-        return sum(hits_over_misses) / len(hits_over_misses)
+            hits += self.total_block_hits(block_hash)
+            misses += self.total_block_misses(block_hash)
+        return hits / misses
 
     def not_known_file_block_hit_to_miss_proportion(self) -> float:
         """
@@ -97,13 +97,12 @@ class StatisticalBlockFileAnalysis(StatisticalBlockAnalysis, BlockFileAnalysis):
         files.
         :return: the ratio of hits to misses
         """
-        hits_over_misses = []
+        hits = 0
+        misses = 0
         for block_hash in self.block_hashes:
             if block_hash not in self._known_blocks:
-                hits_over_misses.append(
-                    self.total_block_hits(block_hash)
-                    / self.total_block_misses(block_hash)
-                )
-        return sum(hits_over_misses) / len(hits_over_misses)
+                hits += self.total_block_hits(block_hash)
+                misses += self.total_block_misses(block_hash)
+        return hits / misses
 
     # TODO: Anything else interesting to know about block file access patterns
