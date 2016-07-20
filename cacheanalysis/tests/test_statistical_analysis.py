@@ -2,8 +2,8 @@ import unittest
 from datetime import datetime, timedelta
 
 from cacheanalysis.collections import RecordCollection
-from cacheanalysis.models import CacheMissRecord, CacheHitRecord, CacheDeleteRecord
-from cacheanalysis.statistical_analysis import StatisticalBlockAnalysis
+from cacheanalysis.models import CacheMissRecord, CacheHitRecord, CacheDeleteRecord, BlockFile
+from cacheanalysis.statistical_analysis import StatisticalBlockAnalysis, StatisticalBlockFileAnalysis
 
 _BLOCK_HASH_1 = "123"
 _BLOCK_HASH_2 = "456"
@@ -59,6 +59,39 @@ class TestStatisticalBlockAnalysis(unittest.TestCase):
         self.assertEqual(1, self.analysis.mean_other_block_misses_between_reload(_BLOCK_HASH_1))
 
     # TODO: Tests for other methods
+
+
+class TestStatisticalBlockFileAnalysis(unittest.TestCase):
+    """
+    Unit tests for `StatisticalBlockFileAnalysis`.
+    """
+    def setUp(self):
+        self.records = [
+            CacheMissRecord(_BLOCK_HASH_1, _TIMESTAMP, _SIZE),
+            CacheMissRecord(_BLOCK_HASH_2, _TIMESTAMP, _SIZE),
+            CacheHitRecord(_BLOCK_HASH_1, _TIMESTAMP + timedelta(days=1)),
+            CacheDeleteRecord(_BLOCK_HASH_1, _TIMESTAMP + timedelta(days=2)),
+            CacheMissRecord(_BLOCK_HASH_1, _TIMESTAMP + timedelta(days=3), _SIZE),
+            CacheHitRecord(_BLOCK_HASH_1, _TIMESTAMP + timedelta(days=4)),
+            CacheHitRecord(_BLOCK_HASH_1, _TIMESTAMP + timedelta(days=5)),
+            CacheDeleteRecord(_BLOCK_HASH_1, _TIMESTAMP + timedelta(days=6)),
+            CacheMissRecord(_BLOCK_HASH_3, _TIMESTAMP + timedelta(days=7), _SIZE),
+            CacheDeleteRecord(_BLOCK_HASH_3, _TIMESTAMP + timedelta(days=8)),
+            CacheMissRecord(_BLOCK_HASH_3, _TIMESTAMP + timedelta(days=9), _SIZE),
+            CacheMissRecord(_BLOCK_HASH_1, _TIMESTAMP + timedelta(days=10), _SIZE)
+        ]
+        record_collection = RecordCollection()
+        for record in self.records:
+            record_collection.add_record(record)
+        self.analysis = StatisticalBlockFileAnalysis(record_collection)
+        block_file = BlockFile("blockfile", [_BLOCK_HASH_1, _BLOCK_HASH_2])
+        self.analysis.register_file(block_file)
+
+    def test_known_file_block_hit_to_miss_proportion(self):
+        self.assertEqual(0.5, self.analysis.known_file_block_hit_to_miss_proportion())
+
+    def test_not_known_file_block_hit_to_miss_proportion_(self):
+        self.assertEqual(0, self.analysis.not_known_file_block_hit_to_miss_proportion())
 
 
 if __name__ == "__main__":
