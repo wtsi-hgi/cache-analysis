@@ -26,7 +26,9 @@ class RecordCollection(abc.Iterable):
         Iterate over all records in the collection. Order will not be consistent.
         :return:
         """
-        return iter(set(chain.from_iterable((chain.from_iterable(d.values())) for d in self._records.values())))
+        return chain.from_iterable(chain.from_iterable(
+            [d.values() for d in self._records.values()]
+        ))
 
     @property
     def records(self):
