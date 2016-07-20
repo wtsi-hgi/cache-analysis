@@ -33,15 +33,22 @@ class VisualBlockAnalysis(VisualAnalysis, BlockAnalysis):
         """
         Visualises what happens to the blocks in the collection of records.
         """
-        # self.plot_misses_hits(plt, self.block_hashes, self.statistical_analysis)
-        # plt.show()
-
         fig = plt.figure()
 
-        ax = fig.add_subplot(1, 1, 1)  # 1 row, 1 column, 1st subplot
-        ax.set_title("Cache misses against cache hits")
-        x, y, size = self.get_misses_hits(self.block_hashes, self.statistical_analysis)
-        self.plot_misses_hits(ax, x, y, s=size)
+        ax1 = fig.add_subplot(2, 1, 1)  # rows, columns, subplot number (1-indexed)
+        ax1.set_title("Cache misses against cache hits")
+        x, y, size = self.get_misses_against_hits(self.block_hashes, self.statistical_analysis)
+        self.plot_misses_against_hits(ax1, x, y, s=size)
+        self.set_limits(ax1, x, y)
+
+        # Double the height of the figure so that subplots do not overlap.
+        fig.set_figheight(fig.get_figheight() * 2, forward=True)
+
+        ax2 = fig.add_subplot(2, 1, 2)
+        ax2.set_title("Cache accesses against mean cache hits per miss")
+        x, y, size = self.get_accesses_against_mean_hits(self.block_hashes, self.statistical_analysis)
+        self.plot_accesses_against_mean_hits(ax2, x, y, s=size)
+        self.set_limits(ax2, x, y)
 
         plt.show()
 
@@ -70,7 +77,7 @@ class VisualBlockAnalysis(VisualAnalysis, BlockAnalysis):
         # ))
 
     @staticmethod
-    def get_misses_hits(block_hashes: Iterable[str], statistical_analysis: StatisticalBlockAnalysis) -> Tuple[List[int], List[int], List[int]]:
+    def get_misses_against_hits(block_hashes: Iterable[str], statistical_analysis: StatisticalBlockAnalysis) -> Tuple[List[int], List[int], List[int]]:
         count = Counter()
         for block_hash in block_hashes:
             x = statistical_analysis.total_block_misses(block_hash)
@@ -82,12 +89,34 @@ class VisualBlockAnalysis(VisualAnalysis, BlockAnalysis):
         return zip(*xysize)
 
     @staticmethod
-    def plot_misses_hits(ax: matplotlib.axes.Axes, x: Sequence[int], y: Sequence[int], **kwargs) -> matplotlib.collections.PathCollection:
+    def plot_misses_against_hits(ax: matplotlib.axes.Axes, x: Sequence[int], y: Sequence[int], **kwargs) -> matplotlib.collections.PathCollection:
         ax.set_xlabel("Cache misses")
         ax.set_ylabel("Cache hits")
+        return ax.scatter(x, y, edgecolors="none", **kwargs)
+
+    @staticmethod
+    def get_accesses_against_mean_hits(block_hashes: Iterable[str], statistical_analysis: StatisticalBlockAnalysis) -> Tuple[List[int], List[int], List[int]]:
+        count = Counter()
+        for block_hash in block_hashes:
+            x = statistical_analysis.total_block_misses(
+                block_hash) + statistical_analysis.total_block_hits(block_hash)
+            y = statistical_analysis.mean_block_hits(block_hash)
+            count[(x, y)] += 1
+        xysize = []
+        for k, v in count.items():
+            xysize.append((*k, v))
+        return zip(*xysize)
+
+    @staticmethod
+    def plot_accesses_against_mean_hits(ax: matplotlib.axes.Axes, x: Sequence[int], y: Sequence[int], **kwargs) -> matplotlib.collections.PathCollection:
+        ax.set_xlabel("Cache accesses")
+        ax.set_ylabel("Mean cache hits")
+        return ax.scatter(x, y, edgecolors="none", **kwargs)
+
+    @staticmethod
+    def set_limits(ax, x, y):
         ax.set_xlim(-0.5, max(10, max(x)) + .5)
         ax.set_ylim(-0.5, max(10, max(y)) + .5)
-        return ax.scatter(x, y, edgecolors="none", **kwargs)
 
 
 class VisualBlockFileAnalysis(VisualBlockAnalysis, BlockFileAnalysis):
@@ -108,18 +137,18 @@ class VisualBlockFileAnalysis(VisualBlockAnalysis, BlockFileAnalysis):
 
         ax1 = fig.add_subplot(2 if display_hashes else 1, 1, 1)
         ax1.set_title("Cache misses against cache hits")
-        x, y, size = self.get_misses_hits(self.block_hashes, self.statistical_analysis)
-        self.plot_misses_hits(ax1, x, y, s=size)
+        x, y, size = self.get_misses_against_hits(self.block_hashes, self.statistical_analysis)
+        self.plot_misses_against_hits(ax1, x, y, s=size)
 
         if display_hashes:
             # Double the height of the figure so that subplots do not overlap.
             fig.set_figheight(fig.get_figheight() * 2, forward=True)
             ax2 = fig.add_subplot(2, 1, 2)
             ax2.set_title("Cache misses against cache hits, filtered")
-            x, y, size = self.get_misses_hits(
+            x, y, size = self.get_misses_against_hits(
                 [h for h in self.block_hashes if h in display_hashes], self.statistical_analysis
             )
-            self.plot_misses_hits(ax2, x, y, s=size)
+            self.plot_misses_against_hits(ax2, x, y, s=size)
 
         plt.show()
 
