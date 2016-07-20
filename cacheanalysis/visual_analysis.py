@@ -1,5 +1,6 @@
 from abc import abstractmethod
 from collections import Counter
+from itertools import chain
 from typing import Iterable, List, Sequence, Tuple
 
 import matplotlib
@@ -7,6 +8,7 @@ from matplotlib import pyplot as plt
 from tabulate import tabulate
 
 from cacheanalysis.analysis import Analysis, BlockAnalysis, BlockFileAnalysis
+from cacheanalysis.models import BlockFile
 from cacheanalysis.statistical_analysis import StatisticalBlockAnalysis, StatisticalBlockFileAnalysis
 
 
@@ -127,28 +129,31 @@ class VisualBlockFileAnalysis(VisualBlockAnalysis, BlockFileAnalysis):
         super().__init__(record_collection)
         self.statistical_analysis = StatisticalBlockFileAnalysis(record_collection)
 
-    def visualise(self, display_hashes: Sequence[str]=()):
+    def visualise(self, interesting_files: Sequence[BlockFile]=()):
         """
         Visualises what happens to the blocks in the collection of records, with
         information on what file each block belongs to.
-        :param display_hashes: hashes of blocks to display. If empty, will display all blocks.
+        :param interesting_files: files to be displayed separately as well as in the main plot.
         """
         fig = plt.figure()
 
-        ax1 = fig.add_subplot(2 if display_hashes else 1, 1, 1)
+        ax1 = fig.add_subplot(2 if interesting_files else 1, 1, 1)
         ax1.set_title("Cache misses against cache hits")
         x, y, size = self.get_misses_against_hits(self.block_hashes, self.statistical_analysis)
         self.plot_misses_against_hits(ax1, x, y, s=size)
+        self.set_limits(ax1, x, y)
 
-        if display_hashes:
+        if interesting_files:
             # Double the height of the figure so that subplots do not overlap.
             fig.set_figheight(fig.get_figheight() * 2, forward=True)
             ax2 = fig.add_subplot(2, 1, 2)
             ax2.set_title("Cache misses against cache hits, filtered")
+            interesting_blocks = list(chain.from_iterable(f.block_hashes for f in interesting_files))
             x, y, size = self.get_misses_against_hits(
-                [h for h in self.block_hashes if h in display_hashes], self.statistical_analysis
+                [h for h in self.block_hashes if h in interesting_blocks], self.statistical_analysis
             )
             self.plot_misses_against_hits(ax2, x, y, s=size)
+            ax2.set(xlim=ax1.get_xlim(), ylim=ax1.get_ylim())
 
         plt.show()
 
