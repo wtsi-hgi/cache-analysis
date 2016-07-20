@@ -37,25 +37,9 @@ class StatisticalBlockAnalysis(BlockAnalysis):
         """
         misses = self.record_collection.get_block_misses(block_hash)
         hits = self.record_collection.get_block_hits(block_hash)
-        deletes = self.record_collection.get_block_deletes(block_hash)
         if len(misses) == 0:
             return None
-        # sort all records into chronological order
-        records = sorted(
-            [record for record in self.record_collection],
-            key=attrgetter("timestamp")
-        )
-        block_in_cache = False
-        block_hits = []
-        for record in records:
-            if record in misses:
-                block_in_cache = True
-                block_hits.append(0)
-            elif record in deletes:
-                block_in_cache = False
-            elif record in hits and block_in_cache:
-                block_hits[-1] += 1
-        return sum(block_hits) / len(block_hits)
+        return len(hits)/len(misses)
 
     def mean_other_block_misses_between_reload(self, block_hash: str) -> Optional[float]:
         """
