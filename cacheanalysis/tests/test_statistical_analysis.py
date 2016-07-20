@@ -40,11 +40,7 @@ class TestStatisticalBlockAnalysis(unittest.TestCase):
         self.assertEqual(0, self.analysis.total_block_misses("other"))
 
     def test_total_block_misses_when_loaded(self):
-        expected_loads = len(
-            [record for record in self.records
-             if record.block_hash == _BLOCK_HASH_1 and type(record) == CacheMissRecord]
-        )
-        self.assertEqual(expected_loads, self.analysis.total_block_misses(_BLOCK_HASH_1))
+        self.assertEqual(3, self.analysis.total_block_misses(_BLOCK_HASH_1))
 
     def test_total_block_hits_when_not_loaded(self):
         self.assertEqual(0, self.analysis.total_block_hits("other"))
