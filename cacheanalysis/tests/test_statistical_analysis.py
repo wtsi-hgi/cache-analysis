@@ -46,6 +46,12 @@ class TestStatisticalBlockAnalysis(unittest.TestCase):
         )
         self.assertEqual(expected_loads, self.analysis.total_block_misses(_BLOCK_HASH_1))
 
+    def test_total_block_hits_when_not_loaded(self):
+        self.assertEqual(0, self.analysis.total_block_hits("other"))
+
+    def test_total_block_hits_when_loaded(self):
+        self.assertEqual(3, self.analysis.total_block_hits(_BLOCK_HASH_1))
+
     def test_mean_block_hits_when_not_loaded(self):
         self.assertIsNone(self.analysis.mean_block_hits("other"))
 
