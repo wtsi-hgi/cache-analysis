@@ -115,8 +115,8 @@ class VisualBlockAnalysis(VisualAnalysis, BlockAnalysis):
 
     @staticmethod
     def set_limits(ax, x, y):
-        ax.set_xlim(-0.5, max(10, max(x)) + .5)
-        ax.set_ylim(-0.5, max(10, max(y)) + .5)
+        ax.set_xlim(-.1*(max(x)-min(x)), max(x) + .1*(max(x)-min(x)))
+        ax.set_ylim(-.1*(max(y)-min(y)), max(y) + .1*(max(y)-min(y)))
 
 
 class VisualBlockFileAnalysis(VisualBlockAnalysis, BlockFileAnalysis):
