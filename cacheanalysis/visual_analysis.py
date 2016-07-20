@@ -100,8 +100,8 @@ class VisualBlockAnalysis(VisualAnalysis, BlockAnalysis):
     def get_accesses_against_mean_hits(block_hashes: Iterable[str], statistical_analysis: StatisticalBlockAnalysis) -> Tuple[List[int], List[int], List[int]]:
         count = Counter()
         for block_hash in block_hashes:
-            x = statistical_analysis.total_block_misses(
-                block_hash) + statistical_analysis.total_block_hits(block_hash)
+            x = statistical_analysis.total_block_misses(block_hash) \
+                + statistical_analysis.total_block_hits(block_hash)
             y = statistical_analysis.mean_block_hits(block_hash)
             count[(x, y)] += 1
         xysize = []
