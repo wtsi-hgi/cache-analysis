@@ -98,7 +98,8 @@ class VisualBlockAnalysis(VisualAnalysis, BlockAnalysis):
         xysize = []
         for k, v in count.items():
             xysize.append((*k, v))
-        return zip(*xysize)
+        x, y, size =  zip(*xysize)
+        return x, y, size
 
     @staticmethod
     def plot_misses_against_hits(ax: mpl.axes.Axes, x: Sequence[int], y: Sequence[int], **kwargs) -> mpl.collections.PathCollection:
@@ -117,7 +118,8 @@ class VisualBlockAnalysis(VisualAnalysis, BlockAnalysis):
         xysize = []
         for k, v in count.items():
             xysize.append((*k, v))
-        return zip(*xysize)
+        x, y, size =  zip(*xysize)
+        return x, y, size
 
     @staticmethod
     def plot_accesses_against_mean_hits(ax: mpl.axes.Axes, x: Sequence[int], y: Sequence[int], **kwargs) -> mpl.collections.PathCollection:
