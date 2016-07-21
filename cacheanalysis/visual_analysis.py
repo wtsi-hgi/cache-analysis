@@ -145,27 +145,8 @@ class VisualBlockFileAnalysis(VisualBlockAnalysis, BlockFileAnalysis):
         """
         Visualises what happens to the blocks in the collection of records, with
         information on what file each block belongs to.
-        :param highlight_blocks: a list of block hashes to highlight.
+        :param highlight_blocks: a list of block hashes to highlight. Combined with
+        `highlight_files`.
+        :param highlight_files: a list of files to highlight. Combined with `highlight_blocks`.
         """
-        fig = plt.figure()
-
-        ax1 = fig.add_subplot(2 if highlight_blocks else 1, 1, 1)
-        ax1.set_title("Cache misses against cache hits")
-        x, y, size = self.get_misses_against_hits(self.block_hashes, self.statistical_analysis)
-        self.plot_misses_against_hits(ax1, x, y, s=size)
-        self.set_limits(ax1, x, y)
-
-        if highlight_blocks:
-            # Double the height of the figure so that subplots do not overlap.
-            fig.set_figheight(fig.get_figheight() * 2, forward=True)
-            ax2 = fig.add_subplot(2, 1, 2)
-            ax2.set_title("Cache misses against cache hits, filtered")
-            x, y, size = self.get_misses_against_hits(
-                [h for h in self.block_hashes if h in highlight_blocks], self.statistical_analysis
-            )
-            self.plot_misses_against_hits(ax2, x, y, s=size)
-            ax2.set(xlim=ax1.get_xlim(), ylim=ax1.get_ylim())
-
-        plt.show()
-
-        plt.close(fig)
+        super().visualise(highlight_blocks)
