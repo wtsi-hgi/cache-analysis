@@ -60,7 +60,7 @@ class VisualBlockAnalysis(VisualAnalysis, BlockAnalysis):
             x, y, size = self.get_accesses_against_mean_hits(
                 [h for h in self.block_hashes if h in highlight_blocks], self.statistical_analysis
             )
-            self.plot_misses_against_hits(ax2, x, y, s=size, c="cyan")
+            self.plot_accesses_against_mean_hits(ax2, x, y, s=size, c="cyan")
 
         plt.show()
 
