@@ -98,7 +98,7 @@ class VisualBlockAnalysis(VisualAnalysis, BlockAnalysis):
         xysize = []
         for k, v in count.items():
             xysize.append((*k, v))
-        x, y, size =  zip(*xysize)
+        x, y, size = zip(*xysize)
         return x, y, size
 
     @staticmethod
@@ -118,7 +118,7 @@ class VisualBlockAnalysis(VisualAnalysis, BlockAnalysis):
         xysize = []
         for k, v in count.items():
             xysize.append((*k, v))
-        x, y, size =  zip(*xysize)
+        x, y, size = zip(*xysize)
         return x, y, size
 
     @staticmethod
