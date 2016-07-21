@@ -31,26 +31,36 @@ class VisualBlockAnalysis(VisualAnalysis, BlockAnalysis):
         super().__init__(record_collection)
         self.statistical_analysis = StatisticalBlockAnalysis(record_collection)
 
-    def visualise(self):
+    def visualise(self, highlight_blocks: Sequence[str]=()):
         """
         Visualises what happens to the blocks in the collection of records.
+        :param highlight_blocks: a list of block hashes to highlight.
         """
         fig = plt.figure()
+        # Double the height of the figure so that subplots do not overlap.
+        fig.set_figheight(fig.get_figheight() * 2, forward=True)
 
         ax1 = fig.add_subplot(2, 1, 1)  # rows, columns, subplot number (1-indexed)
         ax1.set_title("Cache misses against cache hits")
         x, y, size = self.get_misses_against_hits(self.block_hashes, self.statistical_analysis)
         self.plot_misses_against_hits(ax1, x, y, s=size)
         self.set_limits(ax1, x, y)
-
-        # Double the height of the figure so that subplots do not overlap.
-        fig.set_figheight(fig.get_figheight() * 2, forward=True)
+        if highlight_blocks:
+            x, y, size = self.get_misses_against_hits(
+                [h for h in self.block_hashes if h in highlight_blocks], self.statistical_analysis
+            )
+            self.plot_misses_against_hits(ax1, x, y, s=size, c="cyan")
 
         ax2 = fig.add_subplot(2, 1, 2)
         ax2.set_title("Cache accesses against mean cache hits per miss")
         x, y, size = self.get_accesses_against_mean_hits(self.block_hashes, self.statistical_analysis)
         self.plot_accesses_against_mean_hits(ax2, x, y, s=size)
         self.set_limits(ax2, x, y)
+        if highlight_blocks:
+            x, y, size = self.get_accesses_against_mean_hits(
+                [h for h in self.block_hashes if h in highlight_blocks], self.statistical_analysis
+            )
+            self.plot_misses_against_hits(ax2, x, y, s=size, c="cyan")
 
         plt.show()
 
