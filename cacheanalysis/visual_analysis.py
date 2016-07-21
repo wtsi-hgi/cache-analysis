@@ -3,7 +3,7 @@ from collections import Counter
 from itertools import chain
 from typing import Iterable, List, Sequence, Tuple
 
-import matplotlib
+import matplotlib as mpl
 from matplotlib import pyplot as plt
 from tabulate import tabulate
 
@@ -91,7 +91,7 @@ class VisualBlockAnalysis(VisualAnalysis, BlockAnalysis):
         return zip(*xysize)
 
     @staticmethod
-    def plot_misses_against_hits(ax: matplotlib.axes.Axes, x: Sequence[int], y: Sequence[int], **kwargs) -> matplotlib.collections.PathCollection:
+    def plot_misses_against_hits(ax: mpl.axes.Axes, x: Sequence[int], y: Sequence[int], **kwargs) -> mpl.collections.PathCollection:
         ax.set_xlabel("Cache misses")
         ax.set_ylabel("Cache hits")
         return ax.scatter(x, y, edgecolors="none", **kwargs)
@@ -110,7 +110,7 @@ class VisualBlockAnalysis(VisualAnalysis, BlockAnalysis):
         return zip(*xysize)
 
     @staticmethod
-    def plot_accesses_against_mean_hits(ax: matplotlib.axes.Axes, x: Sequence[int], y: Sequence[int], **kwargs) -> matplotlib.collections.PathCollection:
+    def plot_accesses_against_mean_hits(ax: mpl.axes.Axes, x: Sequence[int], y: Sequence[int], **kwargs) -> mpl.collections.PathCollection:
         ax.set_xlabel("Cache accesses")
         ax.set_ylabel("Mean cache hits")
         return ax.scatter(x, y, edgecolors="none", **kwargs)
