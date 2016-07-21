@@ -37,10 +37,8 @@ class VisualBlockAnalysis(VisualAnalysis, BlockAnalysis):
         :param highlight_blocks: a list of block hashes to highlight.
         """
         fig = plt.figure()
-        # Double the height of the figure so that subplots do not overlap.
-        fig.set_figheight(fig.get_figheight() * 2, forward=True)
 
-        ax1 = fig.add_subplot(2, 1, 1)  # rows, columns, subplot number (1-indexed)
+        ax1 = fig.add_subplot(1, 1, 1)  # rows, columns, subplot number (1-indexed)
         ax1.set_title("Cache misses against cache hits")
         x, y, size = self.get_misses_against_hits(self.block_hashes, self.statistical_analysis)
         self.plot_misses_against_hits(ax1, x, y, s=size)
@@ -50,17 +48,6 @@ class VisualBlockAnalysis(VisualAnalysis, BlockAnalysis):
                 [h for h in self.block_hashes if h in highlight_blocks], self.statistical_analysis
             )
             self.plot_misses_against_hits(ax1, x, y, s=size, c="cyan")
-
-        ax2 = fig.add_subplot(2, 1, 2)
-        ax2.set_title("Cache accesses against mean cache hits per miss")
-        x, y, size = self.get_accesses_against_mean_hits(self.block_hashes, self.statistical_analysis)
-        self.plot_accesses_against_mean_hits(ax2, x, y, s=size)
-        self.set_limits(ax2, x, y)
-        if highlight_blocks:
-            x, y, size = self.get_accesses_against_mean_hits(
-                [h for h in self.block_hashes if h in highlight_blocks], self.statistical_analysis
-            )
-            self.plot_accesses_against_mean_hits(ax2, x, y, s=size, c="cyan")
 
         plt.show()
 
@@ -105,26 +92,6 @@ class VisualBlockAnalysis(VisualAnalysis, BlockAnalysis):
     def plot_misses_against_hits(ax: mpl.axes.Axes, x: Sequence[int], y: Sequence[int], **kwargs) -> mpl.collections.PathCollection:
         ax.set_xlabel("Cache misses")
         ax.set_ylabel("Cache hits")
-        return ax.scatter(x, y, edgecolors="none", **kwargs)
-
-    @staticmethod
-    def get_accesses_against_mean_hits(block_hashes: Iterable[str], statistical_analysis: StatisticalBlockAnalysis) -> Tuple[List[int], List[int], List[int]]:
-        count = Counter()
-        for block_hash in block_hashes:
-            x = statistical_analysis.total_block_misses(block_hash) \
-                + statistical_analysis.total_block_hits(block_hash)
-            y = statistical_analysis.mean_block_hits(block_hash)
-            count[(x, y)] += 1
-        xysize = []
-        for k, v in count.items():
-            xysize.append((*k, v))
-        x, y, size = zip(*xysize)
-        return x, y, size
-
-    @staticmethod
-    def plot_accesses_against_mean_hits(ax: mpl.axes.Axes, x: Sequence[int], y: Sequence[int], **kwargs) -> mpl.collections.PathCollection:
-        ax.set_xlabel("Cache accesses")
-        ax.set_ylabel("Mean cache hits")
         return ax.scatter(x, y, edgecolors="none", **kwargs)
 
     @staticmethod
