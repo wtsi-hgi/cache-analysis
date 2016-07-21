@@ -83,7 +83,6 @@ class StatisticalBlockFileAnalysis(StatisticalBlockAnalysis, BlockFileAnalysis):
         files.
         :return: the ratio of hits to misses
         """
-
         hits = 0
         misses = 0
         for block_hash in self._known_blocks:
