@@ -1,5 +1,6 @@
 import unittest
 from datetime import datetime
+from itertools import chain
 
 from cacheusagesimulator.usage_generator import UsageGenerator
 
@@ -47,7 +48,7 @@ class TestVisualBlockFileAnalysis(unittest.TestCase):
         self.analysis = VisualBlockFileAnalysis(record_collection)
 
     def test_visual_analysis(self):
-        blocks_to_display = self.usage_generator.known_reference_files
+        blocks_to_display = list(chain.from_iterable([f.block_hashes for f in self.usage_generator.known_reference_files]))
         self.analysis.visualise(blocks_to_display)
 
 
