@@ -49,8 +49,8 @@ class TestVisualBlockFileAnalysis(unittest.TestCase):
         self.analysis = VisualBlockFileAnalysis(record_collection)
 
     def test_visual_analysis(self):
-        blocks_to_display = list(chain.from_iterable([f.block_hashes for f in self.usage_generator.known_reference_files]))
-        self.analysis.visualise(blocks_to_display)
+        blocks_to_display = self.usage_generator.known_reference_files
+        self.analysis.visualise(highlight_files=blocks_to_display)
 
 
 if __name__ == "__main__":

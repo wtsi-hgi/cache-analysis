@@ -141,7 +141,7 @@ class VisualBlockFileAnalysis(VisualBlockAnalysis, BlockFileAnalysis):
         super().__init__(record_collection)
         self.statistical_analysis = StatisticalBlockFileAnalysis(record_collection)
 
-    def visualise(self, highlight_blocks: Sequence[str]=()):
+    def visualise(self, highlight_blocks: Sequence[str]=(), highlight_files: Sequence[BlockFile]=()):
         """
         Visualises what happens to the blocks in the collection of records, with
         information on what file each block belongs to.
@@ -149,4 +149,4 @@ class VisualBlockFileAnalysis(VisualBlockAnalysis, BlockFileAnalysis):
         `highlight_files`.
         :param highlight_files: a list of files to highlight. Combined with `highlight_blocks`.
         """
-        super().visualise(highlight_blocks)
+        super().visualise(list(highlight_blocks) + list(chain.from_iterable([f.block_hashes for f in highlight_files])))
