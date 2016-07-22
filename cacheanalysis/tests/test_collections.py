@@ -31,9 +31,11 @@ class TestRecordCollection(unittest.TestCase):
 
     def test_contains_without_records(self):
         self.assertCountEqual([], RecordCollection())
+        self.assertNotIn(self.records[0], RecordCollection())
 
     def test_contains_with_records(self):
         self.assertCountEqual(self.records, self.record_collection)
+        self.assertIn(self.records[0], self.record_collection)
 
     def test_iterate_without_records(self):
         self.assertCountEqual(set(), set(RecordCollection()))
