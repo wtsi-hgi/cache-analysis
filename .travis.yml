@@ -8,7 +8,7 @@ install:
   - pip install -r test_requirements.txt
 
 script:
-  - nosetests -v --with-coverage --cover-package=cacheanalysis --cover-inclusive cacheanalysis/tests
+  - nosetests -v --with-coverage --cover-package=cacheanalysis --cover-inclusive -I visual_analysis cacheanalysis/tests
 
 after_success:
   - codecov
