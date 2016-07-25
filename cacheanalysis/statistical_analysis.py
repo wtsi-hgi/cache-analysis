@@ -15,7 +15,7 @@ class StatisticalBlockAnalysis(BlockAnalysis):
         Gets the total number of cache misses for the given block (times that a block has been
         loaded into the cache).
         :param block_hash: the block hash
-        :return: the total number of times loaded
+        :return: the total number of times the block was missed
         """
         return len(self.record_collection.get_block_misses(block_hash))
 
@@ -23,8 +23,8 @@ class StatisticalBlockAnalysis(BlockAnalysis):
         """
         Gets the total number of cache hits for the given block (times that a block has been served
         from the cache).
-        :param block_hash:
-        :return:
+        :param block_hash: the block hash
+        :return: the total number of times the block was hit
         """
         return len(self.record_collection.get_block_hits(block_hash))
 
@@ -69,8 +69,6 @@ class StatisticalBlockAnalysis(BlockAnalysis):
             elif type(record) == CacheMissRecord and not block_in_cache:
                 other_block_misses[-1] += 1
         return sum(other_block_misses) / len(other_block_misses)
-
-    # TODO: Anything else that might be useful to know
 
 
 class StatisticalBlockFileAnalysis(StatisticalBlockAnalysis, BlockFileAnalysis):

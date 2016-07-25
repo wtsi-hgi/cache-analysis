@@ -60,8 +60,6 @@ class TestStatisticalBlockAnalysis(unittest.TestCase):
     def test_mean_other_block_misses_between_reload_when_reloaded(self):
         self.assertEqual(1, self.analysis.mean_other_block_misses_between_reload(_BLOCK_HASH_1))
 
-    # TODO: Tests for other methods
-
 
 class TestStatisticalBlockFileAnalysis(unittest.TestCase):
     """
@@ -91,9 +89,9 @@ class TestStatisticalBlockFileAnalysis(unittest.TestCase):
 
     def test_known_file_block_hit_to_miss_proportion(self):
         self.assertEqual(3/4, self.analysis.known_file_block_hit_to_miss_proportion())
-        # If finding the mean proportion of hits to misses, this will be 0.5 ((3/3 + 0/1)/2); if
-        # finding the total proportion, it will be 0.75 (3 hits / 4 misses). Here, the total
-        # proportion is more useful.
+        # If finding the mean proportion of hits to misses for each block, this will be 0.5
+        # ((3/3 + 0/1)/2); if finding the total proportion of all hits to all misses, it will be
+        # 0.75 (3 hits / 4 misses). Here, the total proportion is more useful.
 
     def test_not_known_file_block_hit_to_miss_proportion(self):
         self.assertEqual(0, self.analysis.not_known_file_block_hit_to_miss_proportion())
